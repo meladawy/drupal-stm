@@ -84,7 +84,7 @@ class SyncToMenuForm extends FormBase {
     $form_state->set(['taxonomy', 'vocabulary'], $taxonomy_vocabulary);
 	// Menu selection.
     $options = [];
-    $menu_storage = \Drupal::entityManager()->getStorage('menu');
+    $menu_storage = \Drupal::service('entity_type.manager')->getStorage('menu');
     foreach ($menu_storage->loadMultiple() as $menu) {
       $options[$menu->id()] = $menu->label();
     }
@@ -155,7 +155,7 @@ class SyncToMenuForm extends FormBase {
 	
 	$path = strtr($path_pattern, array('%tid' => $tid));
 	$uri = 'internal:' . $path;
-   $children_terms = \Drupal::entityManager()->getStorage('taxonomy_term')->loadChildren($term->id(), $vid);
+   $children_terms = \Drupal::service('entity_type.manager')->getStorage('taxonomy_term')->loadChildren($term->id(), $vid);
   
 	$menu_link = $this->loadMenuLinkByUri($uri, $menu_name, $vid);
 	
@@ -213,7 +213,7 @@ class SyncToMenuForm extends FormBase {
 		  $menu_link_array['expanded'] = 1;
 		}
 		
-		$menu_link = \Drupal::entityManager()->getStorage('menu_link_content')->create($menu_link_array);
+		$menu_link = \Drupal::service('entity_type.manager')->getStorage('menu_link_content')->create($menu_link_array);
 		$menu_link->save();
 	}
 	foreach($children_terms as $children_term){
@@ -233,7 +233,7 @@ class SyncToMenuForm extends FormBase {
     $result = $query->range(0, 1)->execute();  
     if(!empty($result)){
       $menu_link_id = reset($result);
-	  $menu_link = \Drupal::entityManager()->getStorage('menu_link_content')->load($menu_link_id);
+	  $menu_link = \Drupal::service('entity_type.manager')->getStorage('menu_link_content')->load($menu_link_id);
     }  
 	return $menu_link;
   }
